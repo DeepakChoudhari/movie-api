@@ -8,12 +8,9 @@ import 'express-async-errors';
 
 import BaseRouter from './routes';
 import logger from '@shared/Logger';
-import { loadMockDataSync } from '@daos/Movies/mock-data/mockData';
 
 const app = express();
 const { BAD_REQUEST } = StatusCodes;
-
-
 
 /************************************************************************************
  *                              Set basic express settings

@@ -1,6 +1,5 @@
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
-import path from 'path';
 import helmet from 'helmet';
 
 import express, { NextFunction, Request, Response } from 'express';
@@ -9,6 +8,7 @@ import 'express-async-errors';
 
 import BaseRouter from './routes';
 import logger from '@shared/Logger';
+import { loadMockDataSync } from '@daos/Movies/mock-data/mockData';
 
 const app = express();
 const { BAD_REQUEST } = StatusCodes;
@@ -25,7 +25,8 @@ app.use(cookieParser());
 
 // Show routes called in console during development
 if (process.env.NODE_ENV === 'development') {
-    app.use(morgan('dev'));
+    morgan.format('morgan-development', '[:date[clf]] ":method :url" :status :res[content-length] - :response-time ms');
+    app.use(morgan('morgan-development'));
 }
 
 // Security

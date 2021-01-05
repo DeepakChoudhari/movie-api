@@ -2,7 +2,7 @@ import find from 'find';
 import Jasmine from 'jasmine';
 import dotenv from 'dotenv';
 import commandLineArgs from 'command-line-args';
-import logger from '@shared/Logger';
+import logger from '@shared/logger';
 
 
 // Setup command line options

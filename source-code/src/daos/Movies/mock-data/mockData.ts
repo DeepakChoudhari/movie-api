@@ -1,6 +1,6 @@
-import { IMovie } from '@entities/Movie';
+import { IMovie } from '@entities/movie';
 import jsonfile from 'jsonfile';
-import logger from '@shared/Logger';
+import logger from '@shared/logger';
 import path from 'path';
 
 const mockDataFilePath = path.join(__dirname, 'mock-data.json');

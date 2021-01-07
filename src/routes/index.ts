@@ -5,7 +5,7 @@ import MovieRouter from './movies';
 const router = Router();
 
 // Add sub-routes
-router.use("/movies", MovieRouter);
+router.use(MovieRouter);
 
 // Export the base-router
 export default router;

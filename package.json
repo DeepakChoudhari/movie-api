@@ -1,6 +1,6 @@
 {
-  "name": "express-gen-ts",
-  "version": "0.0.0",
+  "name": "movie-api",
+  "version": "0.0.1",
   "scripts": {
     "build": "ts-node build.ts",
     "lint": "eslint . --ext .ts",

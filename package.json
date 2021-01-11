@@ -1,6 +1,6 @@
 {
   "name": "movie-api",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "scripts": {
     "build": "ts-node build.ts",
     "lint": "eslint . --ext .ts",
@@ -19,7 +19,7 @@
     "exec": "ts-node -r tsconfig-paths/register ./src"
   },
   "_moduleAliases": {
-    "@daos": "dist/daos",
+    "@dataaccess": "dist/data-access",
     "@entities": "dist/entities",
     "@shared": "dist/shared",
     "@server": "dist/Server"

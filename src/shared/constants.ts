@@ -5,3 +5,5 @@ export class Environment {
         return process.env.NODE_ENV === 'development';
     }
 }
+
+export const AWS_REGION = 'us-east-1';

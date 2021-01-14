@@ -9,6 +9,7 @@ import 'express-async-errors';
 
 import BaseRouter from './routes';
 import logger from '@shared/logger';
+import { ValidationError } from 'express-json-validator-middleware';
 
 const app = express();
 
@@ -32,15 +33,20 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // Add APIs
-app.use('/api', BaseRouter);
+app.use('/api/v1', BaseRouter);
 
 // Print API errors
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-    logger.err(`Unhandled exception occurred - ${err.message} ${EOL} ${err.stack}`, true);
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-        error: err.message,
-    });
+    if (err instanceof ValidationError) {
+        logger.err(`Validaton errors occurred: ${JSON.stringify(err)}`);
+        return res.status(StatusCodes.BAD_REQUEST).json(err);
+    } else {
+        logger.err(`Unhandled exception occurred - ${err.message} ${EOL} ${err.stack}`, true);
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+            error: err.message,
+        });
+    }
 });
 
 // Export express instance

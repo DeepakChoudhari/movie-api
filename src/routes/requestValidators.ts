@@ -1,11 +1,11 @@
 import { Validator } from 'express-json-validator-middleware';
-import { JSONSchema7TypeName } from 'json-schema';
+import { JSONSchema7TypeName, JSONSchema7 } from 'json-schema';
 
 const validator = new Validator({ allErrors: true });
 
 export const validatorFn = validator.validate;
 
-export const createMovieRequestSchema = {
+export const createMovieRequestSchema: JSONSchema7 = {
     type: 'object' as JSONSchema7TypeName,
     required: ['year', 'title'],
     properties: {
@@ -17,6 +17,16 @@ export const createMovieRequestSchema = {
             type: 'string' as JSONSchema7TypeName,
             minLength: 3,
             maxLength: 100
+        },
+        'info': {
+            type: 'object' as JSONSchema7TypeName,
+            required: ['directors'],
+            properties: {
+                'directors': {
+                    type: 'array' as JSONSchema7TypeName,
+                    minItems: 1 
+                }
+            }
         }
     }
 };

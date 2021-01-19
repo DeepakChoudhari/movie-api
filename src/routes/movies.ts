@@ -1,7 +1,6 @@
 import { StatusCodes } from 'http-status-codes';
-import { IRouter, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { IMovieDbContext } from '@dataaccess/movieDbContext';
-import logger from '@shared/logger';
 import { IMovie } from '@entities/movie';
 import Logger from 'jet-logger';
 
@@ -9,14 +8,12 @@ import Logger from 'jet-logger';
  * Class definition for all request handlers
  */
 export class MovieRoutes {
-    private readonly router: IRouter;
-    private readonly movieRepository: IMovieDbContext;
-    private readonly logger: Logger;
+    private readonly _movieRepository: IMovieDbContext;
+    private readonly _logger: Logger;
 
-    constructor(router: IRouter, movieRepository: IMovieDbContext, logger: Logger) {
-        this.router = router;
-        this.movieRepository = movieRepository;
-        this.logger = logger;
+    constructor(movieRepository: IMovieDbContext, logger: Logger) {
+        this._movieRepository = movieRepository;
+        this._logger = logger;
     }
 
     /**
@@ -25,12 +22,12 @@ export class MovieRoutes {
      * @param res Response object
      */
     async postMovie(req: Request, res: Response): Promise<Response> {
-        logger.info(`Creating movie: ${JSON.stringify(req.body)}`);
+        this._logger.info(`Creating movie: ${JSON.stringify(req.body)}`);
         const movie = <IMovie>req.body;
-        const result = await this.movieRepository.create(movie);
+        const result = await this._movieRepository.create(movie);
         
-        return result? res.status(StatusCodes.CREATED).json() : 
-            res.status(StatusCodes.INTERNAL_SERVER_ERROR).json();            
+        return result? res.status(StatusCodes.CREATED).json(movie) : 
+            res.status(StatusCodes.INTERNAL_SERVER_ERROR).json();          
     }
 
     /**

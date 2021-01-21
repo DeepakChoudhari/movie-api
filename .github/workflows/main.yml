@@ -20,6 +20,13 @@ jobs:
     strategy:
       matrix:
         node-version: [14.x]
+    
+    # Host aws dynamodb container for integration tests
+    services:
+      aws-dynamodb:
+         image: amazon/dynamodb-local:latest
+         ports: 
+           - 8000:8000
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:

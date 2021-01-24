@@ -34,7 +34,8 @@ const movieRoutes: MovieRoutes = new MovieRoutes(movieRepository, logger);
 // Add sub-routes
 router.get('/movies', async (req, res) => await movieRoutes.getAllMovies(req, res));
 router.post('/movies', validatorFn({ body: createMovieRequestSchema }), async (req, res) => await movieRoutes.postMovie(req, res));
-router.get('/movies/:year', async (req, res) => await movieRoutes.getMovieByYear(req, res));
+router.get('/movies/year/:year', async (req, res) => await movieRoutes.getMoviesByYear(req, res));
+router.get('/movies/year/:year/title/:title', async (req, res) => await movieRoutes.getMovieByYearAndTitle(req, res));
 
 // Export the base-router
 export default router;

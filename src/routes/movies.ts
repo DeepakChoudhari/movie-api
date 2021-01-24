@@ -40,12 +40,22 @@ export class MovieRoutes {
     }
 
     /**
-     * GET /api/v1/movie/2001
+     * GET /api/v1/movies/year/2001
      * @param req Request object
      * @param res Response object
      */
-    async getMovieByYear(req: Request, res: Response): Promise<Response> {
+    async getMoviesByYear(req: Request, res: Response): Promise<Response> {
         const { year } = req.params;
         return res.status(StatusCodes.OK).json({ year, data: `${new Date()}` });    
+    }
+
+    /**
+     * GET /api/v1/movies/year/:year/title/:title
+     * @param req Request object
+     * @param res Response object
+     */
+    async getMovieByYearAndTitle(req: Request, res: Response): Promise<Response> {
+        const { year, title } = req.params;
+        return res.status(StatusCodes.OK).json({ year, title });
     }
 }

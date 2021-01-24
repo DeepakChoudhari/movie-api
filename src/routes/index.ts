@@ -1,12 +1,34 @@
 import { IMovieDbContext, MovieDbContext } from '@dataaccess/movieDbContext';
+import { AWS_REGION, Environment } from '@shared/constants';
 import logger from '@shared/logger';
+import { DocumentClient } from 'aws-sdk/clients/dynamodb';
 import { Router } from 'express';
 import { MovieRoutes } from './movies';
 import { createMovieRequestSchema, validatorFn } from './requestValidators';
 
-// Init router and path
+// Init router
 const router = Router();
-const movieRepository: IMovieDbContext = new MovieDbContext(logger);
+let movieRepository: IMovieDbContext;
+if (Environment.isDevelopment() || Environment.isTest()) {
+    const options = {
+        region: AWS_REGION,
+        credentials: {
+            secretAccessKey: "abcd",
+            accessKeyId: "1234"
+        },
+        dynamodb: {
+            endpoint: 'http://localhost:8000'
+        }
+    };
+    const documentClient: DocumentClient = new DocumentClient({
+        region: options.region,
+        credentials: options.credentials,
+        endpoint: options.dynamodb.endpoint,
+    });
+    movieRepository = new MovieDbContext(logger, { documentClient, options });
+} else {
+    movieRepository = new MovieDbContext(logger);
+}
 const movieRoutes: MovieRoutes = new MovieRoutes(movieRepository, logger);
 
 // Add sub-routes

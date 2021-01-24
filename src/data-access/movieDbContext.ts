@@ -1,6 +1,6 @@
 import { IMovie } from '@entities/movie'
 import Logger from 'jet-logger';
-import AWS, { ConfigurationOptions } from 'aws-sdk';
+import AWS from 'aws-sdk';
 import { DocumentClient } from 'aws-sdk/clients/dynamodb';
 import { AWS_REGION } from '@shared/constants';
 import { APIVersions } from 'aws-sdk/lib/config';
@@ -15,8 +15,7 @@ export interface IMovieDbContext {
 
 export interface IAwsDocumentClient {
     documentClient: DocumentClient;
-    region?: string;
-    endpoint?: string;
+    options: AWS.ConfigurationOptions & ConfigurationServicePlaceholders & APIVersions;
 }
 
 export class MovieDbContext implements IMovieDbContext {
@@ -28,13 +27,7 @@ export class MovieDbContext implements IMovieDbContext {
         this._logger = logger;
         AWS.config.update({ region: AWS_REGION });
         if (docClient) {
-            let options: ConfigurationOptions & ConfigurationServicePlaceholders & APIVersions;
-            if (docClient.region) {
-                options = { region: docClient.region };
-                if (docClient.endpoint) {
-                    options.dynamodb = { endpoint: docClient.endpoint };
-                }
-            }
+            AWS.config.update(docClient.options);
             this._documentClient = docClient.documentClient;
         } else {
             this._documentClient = new DocumentClient();

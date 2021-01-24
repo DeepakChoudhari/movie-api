@@ -33,6 +33,9 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // Add APIs
+app.get('/api/v1/health', (req: Request, res: Response) => {
+    res.status(StatusCodes.OK).send({ 'Status': 'OK' });
+});
 app.use('/api/v1', BaseRouter);
 
 // Print API errors

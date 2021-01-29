@@ -13,11 +13,11 @@ if (Environment.isDevelopment() || Environment.isTest()) {
     const options = {
         region: AWS_REGION,
         credentials: {
-            secretAccessKey: "abcd",
-            accessKeyId: "1234"
+            secretAccessKey: Environment.awsSecretAccessKey(),
+            accessKeyId: Environment.awsAccessKeyId()
         },
         dynamodb: {
-            endpoint: 'http://localhost:8000'
+            endpoint: Environment.awsDynamoDbEndpoint()
         }
     };
     const documentClient: DocumentClient = new DocumentClient({

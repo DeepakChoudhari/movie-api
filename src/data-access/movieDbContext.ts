@@ -25,11 +25,11 @@ export class MovieDbContext implements IMovieDbContext {
     
     constructor(logger: Logger, docClient?: IAwsDocumentClient) {
         this._logger = logger;
-        AWS.config.update({ region: AWS_REGION });
         if (docClient) {
             AWS.config.update(docClient.options);
             this._documentClient = docClient.documentClient;
         } else {
+            AWS.config.update({ region: AWS_REGION });
             this._documentClient = new DocumentClient();
         }
     }
@@ -53,8 +53,8 @@ export class MovieDbContext implements IMovieDbContext {
             const params = {
                 TableName: MovieDbContext.TableName,
                 Key: {
-                    'year': movie.year,
-                    'title': movie.title
+                    year: Number(movie.year),
+                    title: movie.title
                 }
             };
             const result = await this._documentClient.get(params).promise();
@@ -77,6 +77,10 @@ export class MovieDbContext implements IMovieDbContext {
             if (movie.info.directors) {
                 updateExpression.push('info.directors=:d');
                 expressionAttributeValues.set(':d', movie.info.directors);
+            }
+            if (movie.info.actors) {
+                updateExpression.push('info.actors=:a');
+                expressionAttributeValues.set(':a', movie.info.actors);
             }
             const params = {
                 TableName: MovieDbContext.TableName,

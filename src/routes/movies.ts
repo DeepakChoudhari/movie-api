@@ -55,7 +55,10 @@ export class MovieRoutes {
      * @param res Response object
      */
     async getMovieByYearAndTitle(req: Request, res: Response): Promise<Response> {
-        const { year, title } = req.params;
-        return res.status(StatusCodes.OK).json({ year, title });
+        const year = req.params.year as unknown as number;
+        const title = req.params.title;
+        const movie = await this._movieRepository.get({ year, title });
+        return movie ?
+            res.status(StatusCodes.OK).json(movie) : res.status(StatusCodes.NOT_FOUND).json('Not Found');
     }
 }

@@ -25,9 +25,9 @@ export class MovieRoutes {
         this._logger.info(`Creating movie: ${JSON.stringify(req.body)}`);
         const movie = <IMovie>req.body;
         const result = await this._movieRepository.create(movie);
-        
-        return result? res.status(StatusCodes.CREATED).json(movie) : 
-            res.status(StatusCodes.INTERNAL_SERVER_ERROR).json();          
+
+        return result? res.status(StatusCodes.CREATED).json(movie) :
+            res.status(StatusCodes.INTERNAL_SERVER_ERROR).json();
     }
 
     /**
@@ -46,7 +46,7 @@ export class MovieRoutes {
      */
     async getMoviesByYear(req: Request, res: Response): Promise<Response> {
         const { year } = req.params;
-        return res.status(StatusCodes.OK).json({ year, data: `${new Date()}` });    
+        return res.status(StatusCodes.OK).json({ year, data: `${new Date()}` });
     }
 
     /**
@@ -60,5 +60,11 @@ export class MovieRoutes {
         const movie = await this._movieRepository.get({ year, title });
         return movie ?
             res.status(StatusCodes.OK).json(movie) : res.status(StatusCodes.NOT_FOUND).json('Not Found');
+    }
+
+    async update(req: Request, res: Response): Promise<Response> {
+        const movie = req.body as IMovie;
+        await this._movieRepository.update(movie);
+        return res.status(StatusCodes.ACCEPTED).json('Update successfull.');
     }
 }

@@ -20,11 +20,16 @@ export const createMovieRequestSchema: JSONSchema7 = {
         },
         'info': {
             type: 'object' as JSONSchema7TypeName,
-            required: ['directors'],
+            required: [],
             properties: {
                 'directors': {
                     type: 'array' as JSONSchema7TypeName,
-                    minItems: 1 
+                    minItems: 1
+                },
+                'rating': {
+                    type: 'number' as JSONSchema7TypeName,
+                    minimum: 1,
+                    maximum: 5
                 }
             }
         }

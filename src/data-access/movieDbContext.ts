@@ -1,7 +1,7 @@
 import { IMovie } from '@entities/movie'
 import Logger from 'jet-logger';
 import AWS from 'aws-sdk';
-import { DocumentClient } from 'aws-sdk/clients/dynamodb';
+import { DocumentClient, ExpressionAttributeValueMap, AttributeValue } from 'aws-sdk/clients/dynamodb';
 import { AWS_REGION } from '@shared/constants';
 import { APIVersions } from 'aws-sdk/lib/config';
 import { ConfigurationServicePlaceholders } from 'aws-sdk/lib/config_service_placeholders';
@@ -22,7 +22,7 @@ export class MovieDbContext implements IMovieDbContext {
     private readonly _logger: Logger;
     private readonly _documentClient: DocumentClient;
     public static TableName = 'Movies';
-    
+
     constructor(logger: Logger, docClient?: IAwsDocumentClient) {
         this._logger = logger;
         if (docClient) {
@@ -69,18 +69,46 @@ export class MovieDbContext implements IMovieDbContext {
         try {
             const updateExpression: string[] = ['set'];
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const expressionAttributeValues = new Map<string, any>();
+            const expressionAttributeValues: ExpressionAttributeValueMap = {};
             if (!movie.info) {
                 this._logger.info(`Insufficient data to update the movie [${JSON.stringify(movie)}]`);
                 return undefined;
             }
             if (movie.info.directors) {
-                updateExpression.push('info.directors=:d');
-                expressionAttributeValues.set(':d', movie.info.directors);
+                updateExpression.push('info.directors = :directors');
+                expressionAttributeValues[':directors'] = movie.info.directors as AttributeValue;
+            }
+            if (movie.info.release_date) {
+                updateExpression.push('info.release_date = :releasedate');
+                expressionAttributeValues[':releasedate'] = movie.info.release_date as AttributeValue;
+            }
+            if (movie.info.genres) {
+                updateExpression.push('info.genres = :genres');
+                expressionAttributeValues[':genres'] = movie.info.genres as AttributeValue;
+            }
+            if (movie.info.image_url) {
+                updateExpression.push('info.image_url = :imageurl');
+                expressionAttributeValues[':imageurl'] = movie.info.image_url as AttributeValue;
+            }
+            if (movie.info.plot) {
+                updateExpression.push('info.plot = :plot');
+                expressionAttributeValues[':plot'] = movie.info.plot as AttributeValue;
+            }
+            if (movie.info.rank) {
+                updateExpression.push('info.rank = :rank');
+                expressionAttributeValues[':rank'] = movie.info.rank as AttributeValue;
             }
             if (movie.info.actors) {
-                updateExpression.push('info.actors=:a');
-                expressionAttributeValues.set(':a', movie.info.actors);
+                updateExpression.push('info.actors = :actors');
+                expressionAttributeValues[':actors'] = movie.info.actors as AttributeValue;
+            }
+            if (movie.info.running_time_secs) {
+                updateExpression.push('info.running_time_secs = :runningtime');
+                expressionAttributeValues[':runningtime'] = movie.info.running_time_secs as AttributeValue;
+            }
+            if (movie.info.rating) {
+                updateExpression.push('info.rating = :rating');
+                expressionAttributeValues[':rating'] = movie.info.rating as AttributeValue;
             }
             const params = {
                 TableName: MovieDbContext.TableName,

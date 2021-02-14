@@ -69,7 +69,6 @@ export class MovieDbContext implements IMovieDbContext {
 
     async getMoviesByYear(year: number): Promise<IMovie[]> {
         try {
-            debugger;
             const params = {
                 TableName: MovieDbContext.TableName,
                 KeyConditionExpression: "#yr = :yyyy",

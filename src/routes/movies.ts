@@ -36,7 +36,8 @@ export class MovieRoutes {
      * @param res Response object
      */
     async getAllMovies(req: Request, res: Response): Promise<Response> {
-        return res.status(StatusCodes.OK).json({ data: `${new Date()}` });
+        const movies = await this._movieRepository.getAll();
+        return res.status(StatusCodes.OK).send(movies);
     }
 
     /**
@@ -46,7 +47,8 @@ export class MovieRoutes {
      */
     async getMoviesByYear(req: Request, res: Response): Promise<Response> {
         const { year } = req.params;
-        return res.status(StatusCodes.OK).json({ year, data: `${new Date()}` });
+        const movies = await this._movieRepository.getMoviesByYear(Number(year));
+        return res.status(StatusCodes.OK).json({ data: movies });
     }
 
     /**

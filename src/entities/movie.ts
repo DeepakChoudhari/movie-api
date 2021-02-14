@@ -1,7 +1,7 @@
 export interface IMovie {
     year: number;
     title: string;
-    info: IMovieInfo;
+    info?: IMovieInfo;
 }
 
 export interface IMovieInfo {

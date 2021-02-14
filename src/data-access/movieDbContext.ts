@@ -9,6 +9,8 @@ import { ConfigurationServicePlaceholders } from 'aws-sdk/lib/config_service_pla
 export interface IMovieDbContext {
     create(movie: IMovie): Promise<boolean>;
     get(movie: IMovie): Promise<IMovie|undefined>;
+    getMoviesByYear(year: number): Promise<IMovie[]>;
+    getAll(): Promise<IMovie[]>;
     update(movie: IMovie): Promise<IMovie|undefined>;
     delete(movie: IMovie): Promise<boolean>;
 }
@@ -62,6 +64,40 @@ export class MovieDbContext implements IMovieDbContext {
         } catch (err) {
             this._logger.err(`Error while retrieving the movie [${JSON.stringify(movie)}]: ${err.message}`);
             return undefined;
+        }
+    }
+
+    async getMoviesByYear(year: number): Promise<IMovie[]> {
+        try {
+            debugger;
+            const params = {
+                TableName: MovieDbContext.TableName,
+                KeyConditionExpression: "#yr = :yyyy",
+                ExpressionAttributeNames: {
+                    "#yr": "year"
+                },
+                ExpressionAttributeValues: {
+                    ":yyyy": Number(year)
+                }
+            };
+            const result = await this._documentClient.query(params).promise();
+            return result.Items ? result.Items as IMovie[] : [];
+        } catch(ex) {
+            this._logger.err(`Error while retrieving movies by year [${year}]: ${ex.message}`);
+            throw new Error(`Server error occurred while retrieving movies by year ${year}`);
+        }
+    }
+
+    async getAll(): Promise<IMovie[]> {
+        try {
+            const params = {
+                TableName: MovieDbContext.TableName
+            };
+            const result = await this._documentClient.scan(params).promise();
+            return result.Items ? result.Items as IMovie[] : [];
+        } catch(ex) {
+            this._logger.err(`Error while retrieving all movies: ${ex.message}`);
+            throw new Error(`Server error occurred while retrieving all movies`);
         }
     }
 

@@ -26,3 +26,25 @@ To confirm if tables have been created, run the command below -
 
 ## Running application locally
 Once you clone the project in your local machine, install `npm` packages using `npm ci`. And run the application using `npm run start:dev`.
+
+## Testing api endpoints
+- Create (POST) a movie
+
+`curl -X POST -H "Content-Type: application/json" -d '{ "year": 2001, "title": "Rush" }' http://localhost:3000/api/v1/movies`
+
+- GET all movies
+
+`curl http://localhost:3000/api/v1/movies`
+
+- GET movies by year
+
+`curl http://localhost:3000/api/v1/movies/year/2001`
+
+- GET a movie by its year and title
+
+`curl http://localhost:3000/api/v1/movies/year/2001/title/Rush`
+
+
+- Update (PATCH) a movie
+
+`curl -X PATCH -H "Content-Type: application/json" -d '{ "year": 2002, "title": "Rush 2", "info": { "rating": 5 } }' http://localhost:3000/api/v1/movies`

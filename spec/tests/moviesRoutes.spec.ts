@@ -19,7 +19,7 @@ describe('Integration Tests', () => {
         await teardownDynamodb();
     });
 
-    it('POST /api/v1/movies should return 400 status code without "title" attribute', done => {        
+    it('POST /api/v1/movies should return 400 status code without "title" attribute', done => {
         sut.post('/api/v1/movies')
         .send({
             "year": 2002
@@ -36,6 +36,16 @@ describe('Integration Tests', () => {
         .send(movieItem)
         .expect(StatusCodes.CREATED)
         .end((err) => {
+            expect(err).toBeFalsy();
+            done();
+        });
+    });
+
+    it('GET /api/v1/movies/year/:year/title/:title should return correct movie item', done => {
+        sut.get(`/api/v1/movies/year/${movieItem.year}/title/${movieItem.title}`)
+        .send()
+        .expect(StatusCodes.OK)
+        .end(err => {
             expect(err).toBeFalsy();
             done();
         });
@@ -75,11 +85,11 @@ describe('Integration Tests', () => {
     };
 
     const setupDynamodb = async (): Promise<void> => {
-        AWS.config.update({ 
+        AWS.config.update({
             region: "us-east-1",
-            credentials: { 
-                secretAccessKey: "abcd", 
-                accessKeyId: "1234" 
+            credentials: {
+                secretAccessKey: "abcd",
+                accessKeyId: "1234"
             },
             dynamodb: {
                 endpoint: "http://localhost:8000"
@@ -88,6 +98,8 @@ describe('Integration Tests', () => {
 
         logger.info(`Creating table ${MovieDbContext.TableName}`);
         dynamodb = new DynamoDB();
+        if (await tableExists(dynamodb)) return;
+
         await dynamodb.createTable({
             TableName: "Movies",
             AttributeDefinitions: [
@@ -116,22 +128,28 @@ describe('Integration Tests', () => {
             }
         }).promise();
 
-        logger.info(`Setting up Dynamodb with seed data...`);
-        const client = new AWS.DynamoDB.DocumentClient({
-            region: "us-east-1",
-            credentials: {
-                secretAccessKey: "abcd",
-                accessKeyId: "1234"
-            },
-            endpoint: "http://localhost:8000",
-        });
-        
-        await client.put({
-            TableName: MovieDbContext.TableName,
-            Item: movieItem
-        }).promise();
-        
+        // logger.info(`Setting up Dynamodb with seed data...`);
+        // const client = new AWS.DynamoDB.DocumentClient({
+        //     region: "us-east-1",
+        //     credentials: {
+        //         secretAccessKey: "abcd",
+        //         accessKeyId: "1234"
+        //     },
+        //     endpoint: "http://localhost:8000",
+        // });
+
+        // await client.put({
+        //     TableName: MovieDbContext.TableName,
+        //     Item: movieItem
+        // }).promise();
+
         logger.info(`Setting up Dynamodb with seed data completed.`);
+    };
+
+    const tableExists = async (dynamodb: DynamoDB): Promise<boolean> => {
+        const listTablesOutput = await dynamodb.listTables().promise();
+        return listTablesOutput.TableNames ?
+            listTablesOutput.TableNames.indexOf(MovieDbContext.TableName) > 0 : false;
     };
 
     const teardownDynamodb = async (): Promise<void> => {
